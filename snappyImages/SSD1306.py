@@ -26,6 +26,17 @@ def set_entire_display_on(enable):
     else:
         send_command(0xA4)
 
+def set_invert_display(enable):
+    """Inverts or resets the display.
+
+    If enable is True, the display will be inverted.
+    If enable is False, the display will be restored to normal.
+    """
+    if enable:
+        send_command(0xA7)
+    else:
+        send_command(0xA6)
+
 # Scrolling commands:
 
 # Addressing-setting commands:
