@@ -14,6 +14,18 @@ def set_contrast(level):
     """
     send_command(0x81)
     send_command(level)
+
+def set_entire_display_on(enable):
+    """Sets the entire display to ON or resets back to GDDRAM values.
+
+    If enable is True, every pixel will be lit.
+    If enable is False, each pixel will be lit according to GDDRAM.
+    """
+    if enable:
+        send_command(0xA5)
+    else:
+        send_command(0xA4)
+
 # Scrolling commands:
 
 # Addressing-setting commands:
