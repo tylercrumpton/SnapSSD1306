@@ -49,6 +49,46 @@ def turn_display_off(turn_off):
         send_command(0xAF)
 
 # Scrolling commands:
+def start_horizontal_scroll(scroll_right, start_page, end_page, speed):
+    """Scrolls the display horizontally.
+
+    If scroll_right is True, the display will scroll to the right.
+    If scroll_right is False, the display will scroll to the left.
+
+    TODO: Figure out what the start and end pages actually do. Values may
+    range from 0-7.
+
+    The rate at which the display scrolls is determined by speed, where a
+    lower value results in a slower speed. Value may range from 0-7.
+    """
+    # First stop the display if it's already scrolling:
+    stop_scroll()
+    # Set the scroll direction:
+    if scroll_right:
+        send_command(0x26)
+    else:
+        send_command(0x27)
+    # Dummy byte 0x00:
+    send_command(0x00)
+    # Set start page address:
+    send_command(start_page)
+    # Set scroll speed:
+    send_command(_map_scroll_speed(speed))
+    # Set end page address:
+    send_command(end_page)
+    # Dummy byte 0x00:
+    send_command(0x00)
+    # Dummy byte 0xFF:
+    send_command(0xFF)
+
+def stop_scroll():
+    """Stops the display from scrolling."""
+    send_command(0x2E)
+
+def _map_scroll_speed(speed):
+    """Maps a reasonable speed value between 0 and 7 to the weird SSD1306 value."""
+    speed_map = (0b011, 0b010, 0b001, 0b110, 0b000, 0b101, 0b100, 0b111)
+    return speed_map[speed]
 
 # Addressing-setting commands:
 
