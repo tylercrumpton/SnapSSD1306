@@ -40,6 +40,6 @@ def send_data(data_string):
     cmd = ""
     cmd += chr( SSD1306_ADDRESS )
     cmd += chr( SELECT_DATA_BYTE )
-    cmd += data
+    cmd += data_string
     i2cWrite(cmd, 10, False)
     
