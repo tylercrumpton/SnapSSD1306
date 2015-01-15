@@ -37,6 +37,17 @@ def set_invert_display(enable):
     else:
         send_command(0xA6)
 
+def turn_display_off(turn_off):
+    """Turns the entire display off or turns it back on to normal operation.
+
+    If turn_off is True, the entire display will be turned off.
+    If turn_off is False, the display will be turned back on.
+    """
+    if turn_off:
+        send_command(0xAE)
+    else:
+        send_command(0xAF)
+
 # Scrolling commands:
 
 # Addressing-setting commands:
