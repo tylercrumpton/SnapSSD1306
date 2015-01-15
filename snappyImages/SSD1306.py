@@ -5,6 +5,24 @@ SSD1306_ADDRESS     = 0x78
 SELECT_CONTROL_BYTE = 0x80
 SELECT_DATA_BYTE    = 0x40
 
+# Fundamental commands:
+def set_contrast(level):
+    """Sets the contrast  of the display.
+
+    The display has 256 contrast steps from 0x00 to 0xFF. The segment output current increases 
+    as the contrast step value increases.
+    """
+    send_command(0x81)
+    send_command(level)
+# Scrolling commands:
+
+# Addressing-setting commands:
+
+# Hardware-configuration commands:
+
+# Timing and driving scheme setting commands:
+
+
 def init_display():
     # Init i2c with no pullups (they're external):
     i2cInit(False)
