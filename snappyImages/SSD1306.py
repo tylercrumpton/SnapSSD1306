@@ -80,10 +80,16 @@ def start_horizontal_scroll(scroll_right, start_page, end_page, speed):
     send_command(0x00)
     # Dummy byte 0xFF:
     send_command(0xFF)
+    # Start scrolling:
+    _start_scroll()
 
 def stop_scroll():
     """Stops the display from scrolling."""
     send_command(0x2E)
+
+def _start_scroll():
+    """Starts scrolling the display based on scrolling setup parameters"""
+    send_command(0x2F)
 
 def _map_scroll_speed(speed):
     """Maps a reasonable speed value between 0 and 7 to the weird SSD1306 value."""
