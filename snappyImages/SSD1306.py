@@ -49,7 +49,7 @@ def turn_display_off(turn_off):
         send_command(0xAF)
 
 # Scrolling commands:
-def start_horizontal_scroll(scroll_right, start_page, end_page, speed):
+def start_horizontal_scroll(scroll_right, start_page, end_page, speed, top_fixed_rows, scroll_rows):
     """Scrolls the display horizontally.
 
     If scroll_right is True, the display will scroll to the right.
@@ -60,6 +60,13 @@ def start_horizontal_scroll(scroll_right, start_page, end_page, speed):
 
     The rate at which the display scrolls is determined by speed, where a
     lower value results in a slower speed. Value may range from 0-7.
+
+    The vertical area that actually scrolls is defined as the scroll_row rows
+    after the top_fixed_rows rows. For example:
+           Scroll whole screen: top_fixed_rows=0, scroll_rows=64
+                 Static header: top_fixed_rows=8, scroll_rows=48
+      Static header and footer: top_fixed_rows=8, scroll_rows=40
+                 Static footer: top_fixed_rows=0, scroll_rows=48
     """
     # First stop the display if it's already scrolling:
     stop_scroll()
@@ -80,10 +87,12 @@ def start_horizontal_scroll(scroll_right, start_page, end_page, speed):
     send_command(0x00)
     # Dummy byte 0xFF:
     send_command(0xFF)
+    # Set the vertical scroll area:
+    _set_scroll_area(top_fixed_rows, scroll_rows)
     # Start scrolling:
     _start_scroll()
 
-def start_dual_scroll(scroll_right, start_page, end_page, speed, vertical_offset):
+def start_dual_scroll(scroll_right, start_page, end_page, speed, vertical_offset, top_fixed_rows, scroll_rows):
     """Scrolls the display vertically and horizontally.
 
     If scroll_right is True, the display will scroll vertically and to the right.
@@ -97,6 +106,13 @@ def start_dual_scroll(scroll_right, start_page, end_page, speed, vertical_offset
 
     The number of rows that are scrolled vertically per scroll step is defined by
     vertical_offset. Value may range from 0-63 rows.
+
+    The vertical area that actually scrolls is defined as the scroll_row rows
+    after the top_fixed_rows rows. For example:
+           Scroll whole screen: top_fixed_rows=0, scroll_rows=64
+                 Static header: top_fixed_rows=8, scroll_rows=48
+      Static header and footer: top_fixed_rows=8, scroll_rows=40
+                 Static footer: top_fixed_rows=0, scroll_rows=48
     """
     # First stop the display if it's already scrolling:
     stop_scroll()
@@ -115,6 +131,8 @@ def start_dual_scroll(scroll_right, start_page, end_page, speed, vertical_offset
     send_command(end_page)
     # Set vertical offset:
     send_command(vertical_offset)
+    # Set the vertical scroll area:
+    _set_scroll_area(top_fixed_rows, scroll_rows)
     # Start scrolling:
     _start_scroll()
 
@@ -130,6 +148,11 @@ def _map_scroll_speed(speed):
     """Maps a reasonable speed value between 0 and 7 to the weird SSD1306 value."""
     speed_map = (0b011, 0b010, 0b001, 0b110, 0b000, 0b101, 0b100, 0b111)
     return speed_map[speed]
+
+def _set_scroll_area(top_fixed_rows, scroll_rows):
+    send_command(0xA3)
+    send_command(top_fixed_rows)
+    send_command(scroll_rows)
 
 # Addressing-setting commands:
 
