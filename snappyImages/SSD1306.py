@@ -83,6 +83,41 @@ def start_horizontal_scroll(scroll_right, start_page, end_page, speed):
     # Start scrolling:
     _start_scroll()
 
+def start_dual_scroll(scroll_right, start_page, end_page, speed, vertical_offset):
+    """Scrolls the display vertically and horizontally.
+
+    If scroll_right is True, the display will scroll vertically and to the right.
+    If scroll_right is False, the display will scroll vertically and to the left.
+
+    TODO: Figure out what the start and end pages actually do. Values may
+    range from 0-7.
+
+    The rate at which the display scrolls is determined by speed, where a
+    lower value results in a slower speed. Value may range from 0-7.
+
+    The number of rows that are scrolled vertically per scroll step is defined by
+    vertical_offset. Value may range from 0-63 rows.
+    """
+    # First stop the display if it's already scrolling:
+    stop_scroll()
+    # Set the scroll direction:
+    if scroll_right:
+        send_command(0x29)
+    else:
+        send_command(0x2A)
+    # Dummy byte 0x00:
+    send_command(0x00)
+    # Set start page address:
+    send_command(start_page)
+    # Set scroll speed:
+    send_command(_map_scroll_speed(speed))
+    # Set end page address:
+    send_command(end_page)
+    # Set vertical offset:
+    send_command(vertical_offset)
+    # Start scrolling:
+    _start_scroll()
+
 def stop_scroll():
     """Stops the display from scrolling."""
     send_command(0x2E)
