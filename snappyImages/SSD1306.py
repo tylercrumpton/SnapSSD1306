@@ -159,7 +159,9 @@ def _set_scroll_area(top_fixed_rows, scroll_rows):
 # Hardware-configuration commands:
 
 # Timing and driving scheme setting commands:
-
+def _send_noop():
+    """Sends a no-op to the display controller."""
+    send_command(0xE3)
 
 def init_display():
     # Init i2c with no pullups (they're external):
