@@ -155,6 +155,12 @@ def _set_scroll_area(top_fixed_rows, scroll_rows):
     send_command(scroll_rows)
 
 # Addressing-setting commands:
+def set_start_col_addr(address):
+    """Sets the column starts address register for Page Addressing Mode."""
+    low_nibble = address & 0x0F
+    high_nibble = address >> 4
+    send_command(low_nibble)
+    send_command(high_nibble | 0x10)
 
 # Hardware-configuration commands:
 
