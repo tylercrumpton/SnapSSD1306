@@ -163,6 +163,9 @@ def set_start_col_addr(address):
     send_command(high_nibble | 0x10)
 
 # Hardware-configuration commands:
+def set_display_start_line(line):
+    """Sets the display RAMs start line register from 0-64."""
+    send_command(0x40 | line)
 
 # Timing and driving scheme setting commands:
 def _send_noop():
