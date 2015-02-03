@@ -175,6 +175,44 @@ def _send_noop():
 def init_display():
     # Init i2c with no pullups (they're external):
     i2cInit(False)
+    # Turn off the display:
+    turn_display_off(True)
+    # Set the display clock divisions to 0x80:
+    send_command(0xD5)
+    send_command(0x80)
+    # Set multiplex:
+    send_command(0xA8)
+    send_command(0x3F)
+    # Set display offset to zero:
+    send_command(0xD3)
+    send_command(0x00)
+    # Set start line to zero
+    #TODO
+    # Set charge pump:
+    send_command(0x8D)
+    #TODO send_command(0x10) or send_command(0x14)?
+    # Set the memory mode:
+    send_command(0x20)
+    send_command(0x00)
+    # Set the segment remapping:
+    #TODO
+    # Set COMSCANDEC
+    #TODO
+    # Set COM pins to sequential, no remapping:
+    send_command(0xDA)
+    send_command(0x00)
+    # Set initial contrast:
+    #TODO
+    # Set charge pump precharge:
+    #TODO
+    # Set VCOM deselect level:
+    send_command(0xDB)
+    send_command(0x40)
+    # Turn display back on:
+    turn_display_off(False)
+    # Turn off inverse display:
+    set_invert_display(False)
+    
 
 def send_command(command):
     """Sends a command byte to the display controller."""
