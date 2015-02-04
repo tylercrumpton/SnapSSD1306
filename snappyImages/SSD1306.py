@@ -190,7 +190,7 @@ def init_display():
     #TODO
     # Set charge pump:
     send_command(0x8D)
-    #TODO send_command(0x10) or send_command(0x14)?
+    send_command(0x14)
     # Set the memory mode:
     send_command(0x20)
     send_command(0x00)
@@ -202,9 +202,10 @@ def init_display():
     send_command(0xDA)
     send_command(0x00)
     # Set initial contrast:
-    #TODO
+    set_contrast(0xCF)
     # Set charge pump precharge:
-    #TODO
+    send_command(0xD9)
+    send_command(0xF1)
     # Set VCOM deselect level:
     send_command(0xDB)
     send_command(0x40)
