@@ -187,7 +187,7 @@ def init_display():
     send_command(0xD3)
     send_command(0x00)
     # Set start line to zero
-    #TODO
+    set_display_start_line(0x0)
     # Set charge pump:
     send_command(0x8D)
     send_command(0x14)
@@ -195,9 +195,9 @@ def init_display():
     send_command(0x20)
     send_command(0x00)
     # Set the segment remapping:
-    #TODO
-    # Set COMSCANDEC
-    #TODO
+    send_command(0xA0 | 0x01)
+    # Set COM output scan direction to COM[N-1]->COM[0]
+    send_command(0xC8)
     # Set COM pins to sequential, no remapping:
     send_command(0xDA)
     send_command(0x00)
