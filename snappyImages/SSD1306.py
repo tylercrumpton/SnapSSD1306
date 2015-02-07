@@ -200,7 +200,7 @@ def init_display():
     send_command(0xC8)
     # Set COM pins to sequential, no remapping:
     send_command(0xDA)
-    send_command(0x00)
+    send_command(0x12)
     # Set initial contrast:
     set_contrast(0xCF)
     # Set charge pump precharge:
