@@ -168,6 +168,11 @@ def set_display_start_line(line):
     send_command(0x40 | line)
 
 # Timing and driving scheme setting commands:
+def set_clock_divide_ratio_frequency(ratio, frequency)
+    """Sets the display clock's divide ratio and oscillator frequency."""
+    send_command(0xD5)
+    send_command(frequency << 4 | ratio)
+
 def _send_noop():
     """Sends a no-op to the display controller."""
     send_command(0xE3)
@@ -177,9 +182,8 @@ def init_display():
     i2cInit(False)
     # Turn off the display:
     turn_display_off(True)
-    # Set the display clock divisions to 0x80:
-    send_command(0xD5)
-    send_command(0x80)
+    # Set the display clock frequency:
+    set_clock_divide_ratio_frequency(0, 4)
     # Set multiplex:
     send_command(0xA8)
     send_command(0x3F)
