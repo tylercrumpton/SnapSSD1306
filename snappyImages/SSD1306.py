@@ -167,8 +167,13 @@ def set_display_start_line(line):
     """Sets the display RAMs start line register from 0-64."""
     send_command(0x40 | line)
 
+def set_multiplex_ratio(ratio):
+    """Sets the multiplex ratio to any value between 16-63"""
+    send_command(0xA8)
+    send_command(ratio)
+    
 # Timing and driving scheme setting commands:
-def set_clock_divide_ratio_frequency(ratio, frequency)
+def set_clock_divide_ratio_frequency(ratio, frequency):
     """Sets the display clock's divide ratio and oscillator frequency."""
     send_command(0xD5)
     send_command(frequency << 4 | ratio)
@@ -184,9 +189,9 @@ def init_display():
     turn_display_off(True)
     # Set the display clock frequency:
     set_clock_divide_ratio_frequency(0, 4)
-    # Set multiplex:
-    send_command(0xA8)
-    send_command(0x3F)
+    # Set multiplex ratio to 63:
+    
+    set_multiplex_ratio(63)
     # Set display offset to zero:
     send_command(0xD3)
     send_command(0x00)
