@@ -172,6 +172,10 @@ def set_multiplex_ratio(ratio):
     send_command(0xA8)
     send_command(ratio)
     
+def set_display_offset(offset):
+    """Sets the vertical display offset toa value between 0-63"""
+    send_command(0xD3)
+    send_command(offset)
 # Timing and driving scheme setting commands:
 def set_clock_divide_ratio_frequency(ratio, frequency):
     """Sets the display clock's divide ratio and oscillator frequency."""
@@ -190,11 +194,9 @@ def init_display():
     # Set the display clock frequency:
     set_clock_divide_ratio_frequency(0, 4)
     # Set multiplex ratio to 63:
-    
     set_multiplex_ratio(63)
     # Set display offset to zero:
-    send_command(0xD3)
-    send_command(0x00)
+    set_display_offset(0)
     # Set start line to zero
     set_display_start_line(0x0)
     # Set charge pump:
