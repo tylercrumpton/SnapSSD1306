@@ -168,14 +168,23 @@ def set_display_start_line(line):
     send_command(0x40 | line)
 
 def set_multiplex_ratio(ratio):
-    """Sets the multiplex ratio to any value between 16-63"""
+    """Sets the multiplex ratio to any value between 16-63."""
     send_command(0xA8)
     send_command(ratio)
     
 def set_display_offset(offset):
-    """Sets the vertical display offset toa value between 0-63"""
+    """Sets the vertical display offset toa value between 0-63."""
     send_command(0xD3)
     send_command(offset)
+
+def enable_charge_pump(enable):
+    """Enables the internally-regulated chrage pump supply voltage."""
+    send_command(0x8D)
+    if enable:
+        send_command(0x14)
+    else:
+        send_command(0x10)
+
 # Timing and driving scheme setting commands:
 def set_clock_divide_ratio_frequency(ratio, frequency):
     """Sets the display clock's divide ratio and oscillator frequency."""
@@ -199,9 +208,8 @@ def init_display():
     set_display_offset(0)
     # Set start line to zero
     set_display_start_line(0x0)
-    # Set charge pump:
-    send_command(0x8D)
-    send_command(0x14)
+    # Enable charge pump:
+    enable_charge_pump(True)
     # Set the memory mode:
     send_command(0x20)
     send_command(0x00)
