@@ -162,6 +162,16 @@ def set_start_col_addr(address):
     send_command(low_nibble)
     send_command(high_nibble | 0x10)
 
+def set_addressing_mode(mode):
+    """Sets the memory addressing mode for the display RAM.
+
+    mode = 0 for Horizontal Addressing Mode
+    mode = 1 for Vertical Addressing Mode
+    mode = 2 for Page Addressing Mode
+    """
+    send_command(0x20)
+    send_command(mode)
+
 # Hardware-configuration commands:
 def set_display_start_line(line):
     """Sets the display RAMs start line register from 0-64."""
@@ -171,7 +181,7 @@ def set_multiplex_ratio(ratio):
     """Sets the multiplex ratio to any value between 16-63."""
     send_command(0xA8)
     send_command(ratio)
-    
+
 def set_display_offset(offset):
     """Sets the vertical display offset toa value between 0-63."""
     send_command(0xD3)
@@ -210,9 +220,8 @@ def init_display():
     set_display_start_line(0x0)
     # Enable charge pump:
     enable_charge_pump(True)
-    # Set the memory mode:
-    send_command(0x20)
-    send_command(0x00)
+    # Set the memory mode to horizontal addressing:
+    set_addressing_mode(0)
     # Set the segment remapping:
     send_command(0xA0 | 0x01)
     # Set COM output scan direction to COM[N-1]->COM[0]
