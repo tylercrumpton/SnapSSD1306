@@ -195,6 +195,17 @@ def enable_charge_pump(enable):
     else:
         send_command(0x10)
 
+def set_segment_remap(do_set):
+    """Sets or unsets the segment remapping of the column to segment map
+
+    If do_set is True, column address 127 is mapped to SEG0
+    If do_set is False, column address 0 is mapped to SEG0
+    """
+    if do_set:
+        send_command(0xA1)
+    else:
+        send_command(0xA0)
+
 # Timing and driving scheme setting commands:
 def set_clock_divide_ratio_frequency(ratio, frequency):
     """Sets the display clock's divide ratio and oscillator frequency."""
@@ -223,7 +234,7 @@ def init_display():
     # Set the memory mode to horizontal addressing:
     set_addressing_mode(0)
     # Set the segment remapping:
-    send_command(0xA0 | 0x01)
+    set_segment_remap(True)
     # Set COM output scan direction to COM[N-1]->COM[0]
     send_command(0xC8)
     # Set COM pins to sequential, no remapping:
