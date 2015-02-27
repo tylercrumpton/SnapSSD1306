@@ -206,6 +206,17 @@ def set_segment_remap(do_set):
     else:
         send_command(0xA0)
 
+def invert_com_scan_direction(do_invert):
+    """Inverts the COM output scan direction.
+
+    If do_invert is True, invert mode scan from COM[N-1] COM0
+    If do_invert is False, normal mode scan from COM0 to COM[N-1]
+    """
+    if do_invert:
+        send_command(0xC8)
+    else:
+        send_command(0xC0)
+
 # Timing and driving scheme setting commands:
 def set_clock_divide_ratio_frequency(ratio, frequency):
     """Sets the display clock's divide ratio and oscillator frequency."""
@@ -236,7 +247,7 @@ def init_display():
     # Set the segment remapping:
     set_segment_remap(True)
     # Set COM output scan direction to COM[N-1]->COM[0]
-    send_command(0xC8)
+    invert_com_scan_direction(True)
     # Set COM pins to sequential, no remapping:
     send_command(0xDA)
     send_command(0x12)
