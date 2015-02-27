@@ -217,6 +217,28 @@ def invert_com_scan_direction(do_invert):
     else:
         send_command(0xC0)
 
+def set_com_pins_config(set_sequential, enable_remap):
+    """Sets the COM pin sequencing and remapping configurations.
+
+    If set_sequential is True, the display will use sequential sequencing.
+    If set_sequential is False, the display will use alternating sequencing.
+
+    If enable_remap is True, the display will use left/right remapping.
+    If enable_remap is False, the display will not use remapping.
+    """
+    if set_sequential:
+        a4bit = 0x00
+    else:
+        a4bit = 0x10
+
+    if enable_remap:
+        a5bit = 0x20
+    else:
+        a5bit = 0x00
+
+    send_command(0xDA)
+    send_command(0x02 | a4bit | a5bit)
+
 # Timing and driving scheme setting commands:
 def set_clock_divide_ratio_frequency(ratio, frequency):
     """Sets the display clock's divide ratio and oscillator frequency."""
@@ -248,9 +270,8 @@ def init_display():
     set_segment_remap(True)
     # Set COM output scan direction to COM[N-1]->COM[0]
     invert_com_scan_direction(True)
-    # Set COM pins to sequential, no remapping:
-    send_command(0xDA)
-    send_command(0x12)
+    # Set COM pins to alternating sequencing, no remapping:
+    set_com_pins_config(False, False)
     # Set initial contrast:
     set_contrast(0xCF)
     # Set charge pump precharge:
