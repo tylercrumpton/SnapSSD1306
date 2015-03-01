@@ -245,6 +245,14 @@ def set_clock_divide_ratio_frequency(ratio, frequency):
     send_command(0xD5)
     send_command(frequency << 4 | ratio)
 
+def set_precharge_period(phase1_period, phase2_period):
+    """Sets the duration of the pre-charge period of phase 1 and 2.
+
+    Period is a value between 1 and 15 for both phase 1 and 2.
+    """
+    send_command(0xD9)
+    send_command(phase1_period | (phase2_period << 4))
+
 def _send_noop():
     """Sends a no-op to the display controller."""
     send_command(0xE3)
@@ -274,9 +282,8 @@ def init_display():
     set_com_pins_config(False, False)
     # Set initial contrast:
     set_contrast(0xCF)
-    # Set charge pump precharge:
-    send_command(0xD9)
-    send_command(0xF1)
+    # Set charge pump precharge periods:
+    set_precharge_period(1, 15)
     # Set VCOM deselect level:
     send_command(0xDB)
     send_command(0x40)
