@@ -9,7 +9,7 @@ SELECT_DATA_BYTE    = 0x40
 def set_contrast(level):
     """Sets the contrast  of the display.
 
-    The display has 256 contrast steps from 0x00 to 0xFF. The segment output current increases 
+    The display has 256 contrast steps from 0x00 to 0xFF. The segment output current increases
     as the contrast step value increases.
     """
     send_command(0x81)
@@ -253,6 +253,15 @@ def set_precharge_period(phase1_period, phase2_period):
     send_command(0xD9)
     send_command(phase1_period | (phase2_period << 4))
 
+def set_vcom_deselect_level(level):
+    """Set the V_COMH regulator output voltage.
+
+    A level value from 0 - 7 sets the output voltage to 0.65 - 1.07 times VCC,
+    in increments of 0.06 times VCC.
+    """
+    send_command(0xDB)
+    send_command(level << 4)
+
 def _send_noop():
     """Sends a no-op to the display controller."""
     send_command(0xE3)
@@ -284,14 +293,12 @@ def init_display():
     set_contrast(0xCF)
     # Set charge pump precharge periods:
     set_precharge_period(1, 15)
-    # Set VCOM deselect level:
-    send_command(0xDB)
-    send_command(0x40)
+    # Set V_COMH regulator output to 0.89 * V_CC:
+    set_vcom_deselect_level(4)
     # Turn display back on:
     turn_display_off(False)
     # Turn off inverse display:
     set_invert_display(False)
-    
 
 def send_command(command):
     """Sends a command byte to the display controller."""
@@ -308,4 +315,3 @@ def send_data(data_string):
     cmd += chr( SELECT_DATA_BYTE )
     cmd += data_string
     i2cWrite(cmd, 10, False)
-    
