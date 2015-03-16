@@ -1,5 +1,5 @@
 """8x8 pixel font (7x7 usable pixels) based on Joystix font by typodermicfonts"""
-#from SSD1306 import *
+from SSD1306 import *
 
 font_8x8 = ("\x00\x00\x00\x00\x00\x00\x00\x00", # CUSTOM_00
             "\x00\x00\x00\x00\x00\x00\x00\x00", # CUSTOM_01
@@ -98,16 +98,15 @@ font_8x8 = ("\x00\x00\x00\x00\x00\x00\x00\x00", # CUSTOM_00
 def print_8x8(string):
     """Prints the given string using a 8x8 pixel font."""
     i = 0
-    j = 0
-    while i < 8:
-        while j < len(string):
-            # Grab the current character from the string:
-            character = ord(string[j])
-            # Get the row byte for the correct row:
-            row_byte = font_8x8[character][i]
-            # Print the row byte:
-            # TODO
-
+    while i < len(string):
+        # Grab the current character from the string:
+        character = ord(string[i])
+        j = 0
+        while j < 8:
+            # Get the column byte for the current column:
+            row_byte = font_8x8[character][j]
+            # Print the column byte:
+            send_data(row_byte)
 
             j += 1
         i += 1
