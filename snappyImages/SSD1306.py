@@ -53,11 +53,13 @@ def turn_display_off(turn_off):
 def clear_ram():
     """Clears the graphics RAM."""
     set_page_address(0, 7)
+    set_column_address(0,127)
     i = SSD1306_COLS * SSD1306_ROWS / 128
     while i > 0:
         send_data("\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00")
         i = i - 1
     set_page_address(0, 7)
+    set_column_address(0,127)
 
 # Scrolling commands:
 def start_horizontal_scroll(scroll_right, start_page, end_page, speed, top_fixed_rows, scroll_rows):
@@ -180,6 +182,14 @@ def set_addressing_mode(mode):
     """
     send_command(0x20)
     send_command(mode)
+
+def set_column_address(start_addr, end_addr):
+    """Sets the start and end column pointers, resetting the current column
+    to the start column.
+    """
+    send_command(0x21)
+    send_command(start_addr)
+    send_command(end_addr)
 
 def set_page_address(start_page, end_page):
     """Sets the start and end page pointers, resetting the current page
