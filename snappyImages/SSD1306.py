@@ -90,7 +90,7 @@ def start_horizontal_scroll(scroll_right, start_page, end_page, speed, top_fixed
     # Set start page address:
     send_command(start_page)
     # Set scroll speed:
-    send_command(_map_scroll_speed(speed))
+    send_command(map_scroll_speed(speed))
     # Set end page address:
     send_command(end_page)
     # Dummy byte 0x00:
@@ -98,9 +98,9 @@ def start_horizontal_scroll(scroll_right, start_page, end_page, speed, top_fixed
     # Dummy byte 0xFF:
     send_command(0xFF)
     # Set the vertical scroll area:
-    _set_scroll_area(top_fixed_rows, scroll_rows)
+    set_scroll_area(top_fixed_rows, scroll_rows)
     # Start scrolling:
-    _start_scroll()
+    start_scroll()
 
 def start_dual_scroll(scroll_right, start_page, end_page, speed, vertical_offset, top_fixed_rows, scroll_rows):
     """Scrolls the display vertically and horizontally.
@@ -135,30 +135,30 @@ def start_dual_scroll(scroll_right, start_page, end_page, speed, vertical_offset
     # Set start page address:
     send_command(start_page)
     # Set scroll speed:
-    send_command(_map_scroll_speed(speed))
+    send_command(map_scroll_speed(speed))
     # Set end page address:
     send_command(end_page)
     # Set vertical offset:
     send_command(vertical_offset)
     # Set the vertical scroll area:
-    _set_scroll_area(top_fixed_rows, scroll_rows)
+    set_scroll_area(top_fixed_rows, scroll_rows)
     # Start scrolling:
-    _start_scroll()
+    start_scroll()
 
 def stop_scroll():
     """Stops the display from scrolling."""
     send_command(0x2E)
 
-def _start_scroll():
+def start_scroll():
     """Starts scrolling the display based on scrolling setup parameters"""
     send_command(0x2F)
 
-def _map_scroll_speed(speed):
+def map_scroll_speed(speed):
     """Maps a reasonable speed value between 0 and 7 to the weird SSD1306 value."""
     speed_map = (0b011, 0b010, 0b001, 0b110, 0b000, 0b101, 0b100, 0b111)
     return speed_map[speed]
 
-def _set_scroll_area(top_fixed_rows, scroll_rows):
+def set_scroll_area(top_fixed_rows, scroll_rows):
     send_command(0xA3)
     send_command(top_fixed_rows)
     send_command(scroll_rows)
@@ -279,7 +279,7 @@ def set_vcom_deselect_level(level):
     send_command(0xDB)
     send_command(level << 4)
 
-def _send_noop():
+def send_noop():
     """Sends a no-op to the display controller."""
     send_command(0xE3)
 
