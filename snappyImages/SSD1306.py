@@ -171,6 +171,14 @@ def set_addressing_mode(mode):
     """
     send_command(0x20)
     send_command(mode)
+    
+def set_page_address(start_page, end_page):
+    """Sets the start and end page pointers, resetting the current page
+    to the start page.
+    """
+    send_command(0x22)
+    send_command(start_page)
+    send_command(end_page)
 
 # Hardware-configuration commands:
 def set_display_start_line(line):
