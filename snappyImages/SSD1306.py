@@ -1,6 +1,8 @@
 """Framework for displaying graphics on a 128x64 OLED screen powered by the SSD1306 chip."""
 
 SSD1306_ADDRESS     = 0x78
+SSD1306_ROWS        = 64
+SSD1306_COLS        = 128
 
 SELECT_CONTROL_BYTE = 0x80
 SELECT_DATA_BYTE    = 0x40
@@ -47,6 +49,15 @@ def turn_display_off(turn_off):
         send_command(0xAE)
     else:
         send_command(0xAF)
+
+def clear_ram():
+    """Clears the graphics RAM."""
+    set_page_address(0, 7)
+    i = SSD1306_COLS * SSD1306_ROWS / 128
+    while i > 0:
+        send_data("\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00")
+        i = i - 1
+    set_page_address(0, 7)
 
 # Scrolling commands:
 def start_horizontal_scroll(scroll_right, start_page, end_page, speed, top_fixed_rows, scroll_rows):
@@ -303,6 +314,8 @@ def init_display():
     set_precharge_period(1, 15)
     # Set V_COMH regulator output to 0.89 * V_CC:
     set_vcom_deselect_level(4)
+    # Clear the GFX RAM:
+    clear_ram()
     # Turn display back on:
     turn_display_off(False)
     # Turn off inverse display:
