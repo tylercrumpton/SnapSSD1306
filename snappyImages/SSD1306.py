@@ -66,8 +66,7 @@ def start_horizontal_scroll(scroll_right, start_page, end_page, speed, top_fixed
     If scroll_right is True, the display will scroll to the right.
     If scroll_right is False, the display will scroll to the left.
 
-    TODO: Figure out what the start and end pages actually do. Values may
-    range from 0-7.
+    The start and end pages values may range from 0-7.
 
     The rate at which the display scrolls is determined by speed, where a
     lower value results in a slower speed. Value may range from 0-7.
@@ -109,8 +108,7 @@ def start_dual_scroll(scroll_right, start_page, end_page, speed, vertical_offset
     If scroll_right is True, the display will scroll vertically and to the right.
     If scroll_right is False, the display will scroll vertically and to the left.
 
-    TODO: Figure out what the start and end pages actually do. Values may
-    range from 0-7.
+    The start and end pages values may range from 0-7.
 
     The rate at which the display scrolls is determined by speed, where a
     lower value results in a slower speed. Value may range from 0-7.
@@ -182,7 +180,7 @@ def set_addressing_mode(mode):
     """
     send_command(0x20)
     send_command(mode)
-    
+
 def set_page_address(start_page, end_page):
     """Sets the start and end page pointers, resetting the current page
     to the start page.
