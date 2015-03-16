@@ -202,7 +202,7 @@ def set_multiplex_ratio(ratio):
     send_command(ratio)
 
 def set_display_offset(offset):
-    """Sets the vertical display offset toa value between 0-63."""
+    """Sets the vertical display offset to a value between 0-63."""
     send_command(0xD3)
     send_command(offset)
 
