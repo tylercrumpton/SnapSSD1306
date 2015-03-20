@@ -1,3 +1,4 @@
+[![Build Status](https://travis-ci.org/tylercrumpton/SnapSSD1306.svg?branch=master)](https://travis-ci.org/tylercrumpton/SnapSSD1306)
 # SnapSSD1306
 Framework for displaying images and text on an SSD1306 OLED display with a Synapse SNAP module.
 
