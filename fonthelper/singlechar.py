@@ -7,6 +7,17 @@ class CharacterImageHandler(object):
     def check_image_size(self):
         """Checks if image is 8x8 pixels."""
         return self.im.size == (8,8)
+    def get_bytes(self):
+        if not self.check_image_size():
+            raise ValueError
+        bytelist = []
+        for x in range(0, 8, 1):
+            byte = 0
+            for y in range(7, -1, -1):
+                bitvalue = self.im.getpixel((x,y)) < 128
+                byte = (byte << 1) + bitvalue
+            bytelist.append(byte)
+        return bytelist
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Convert a single character image to a font image for the SSD1306.')
@@ -14,3 +25,4 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     cih = CharacterImageHandler(args.image)
+    print cih.get_bytes()
