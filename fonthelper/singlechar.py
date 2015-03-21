@@ -8,6 +8,16 @@ class CharacterImageHandler(object):
     def check_image_size(self):
         """Checks if image is 8x8 pixels."""
         return self.im.size == (8,8)
+    def eval_pixel(self, pixel):
+        """Returns True if pixel is evaluated as 'black'."""
+        if self.im.mode == "1":
+            is_black = pixel < 128
+        elif self.im.mode == "RGB":
+            rgb_sum = pixel[0] + pixel[1] + pixel[2]
+            is_black = rgb_sum < 382
+        else:
+            raise ValueError
+        return is_black
     def get_bytes(self):
         if not self.check_image_size():
             raise ValueError
@@ -15,7 +25,7 @@ class CharacterImageHandler(object):
         for x in range(0, 8, 1):
             byte = 0
             for y in range(7, -1, -1):
-                bitvalue = self.im.getpixel((x,y)) < 128
+                bitvalue = self.eval_pixel(self.im.getpixel((x,y)))
                 byte = (byte << 1) + bitvalue
             bytelist.append(byte)
         return bytelist

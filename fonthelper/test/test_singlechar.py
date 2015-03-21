@@ -67,15 +67,19 @@ class TestCharacterGetBytes(unittest.TestCase):
     ####################
     @staticmethod
     def side_effect_a(coord):
-        values_a = {(0,0):255,(1,0):129,(2,0):0,  (3,0):0,  (4,0):0,  (5,0):190,(6,0):255,(7,0):255,
-                    (0,1):255,(1,1):0,  (2,1):0,  (3,1):255,(4,1):0,  (5,1):19, (6,1):255,(7,1):255,
-                    (0,2):0,  (1,2):0,  (2,2):255,(3,2):255,(4,2):255,(5,2):40, (6,2):0,  (7,2):255,
-                    (0,3):0,  (1,3):0,  (2,3):200,(3,3):255,(4,3):170,(5,3):30, (6,3):55, (7,3):255,
-                    (0,4):0,  (1,4):0,  (2,4):127,(3,4):0,  (4,4):0,  (5,4):20, (6,4):25, (7,4):255,
-                    (0,5):0,  (1,5):0,  (2,5):129,(3,5):255,(4,5):255,(5,5):10, (6,5):20, (7,5):255,
-                    (0,6):0,  (1,6):0,  (2,6):128,(3,6):255,(4,6):255,(5,6):0,  (6,6):2,  (7,6):255,
-                    (0,7):255,(1,7):255,(2,7):255,(3,7):255,(4,7):255,(5,7):255,(6,7):254,(7,7):255}
+        values_a = {(0,0):False,(1,0):False,(2,0):True,(3,0):True,(4,0):True,(5,0):False,(6,0):False,(7,0):False,
+                    (0,1):False,(1,1):True,(2,1):True,(3,1):False,(4,1):True,(5,1):True,(6,1):False,(7,1):False,
+                    (0,2):True,(1,2):True,(2,2):False,(3,2):False,(4,2):False,(5,2):True,(6,2):True,(7,2):False,
+                    (0,3):True,(1,3):True,(2,3):False,(3,3):False,(4,3):False,(5,3):True,(6,3):True,(7,3):False,
+                    (0,4):True,(1,4):True,(2,4):True,(3,4):True,(4,4):True,(5,4):True,(6,4):True,(7,4):False,
+                    (0,5):True,(1,5):True,(2,5):False,(3,5):False,(4,5):False,(5,5):True,(6,5):True,(7,5):False,
+                    (0,6):True,(1,6):True,(2,6):False,(3,6):False,(4,6):False,(5,6):True,(6,6):True,(7,6):False,
+                    (0,7):False,(1,7):False,(2,7):False,(3,7):False,(4,7):False,(5,7):False,(6,7):False,(7,7):False}
         return values_a[coord]
+
+    @staticmethod
+    def side_effect_return_input(input_val):
+        return input_val
 
     ##########
     # TESTS
@@ -87,11 +91,13 @@ class TestCharacterGetBytes(unittest.TestCase):
         with self.assertRaises(ValueError):
             self.cih.get_bytes()
 
+    @patch('fonthelper.singlechar.CharacterImageHandler.eval_pixel')
     @patch('fonthelper.singlechar.CharacterImageHandler.check_image_size')
-    def test_get_bytes_a(self, check_size_stub):
+    def test_get_bytes_a(self, check_size_stub, eval_pixel_stub):
         """Validates the byte list for an example 'A' character."""
         check_size_stub.return_value = True
-        self.cih.im.getpixel = Mock(side_effect=self.side_effect_a)
+        self.cih.im.getpixel = Mock(side_effect=self.side_effect_return_input)
+        eval_pixel_stub.side_effect = self.side_effect_a
         expected_list = [124, 126, 19, 17, 19, 126, 124, 0]
         self.assertListEqual(self.cih.get_bytes(), expected_list)
 
@@ -114,7 +120,6 @@ class TestCharacterGetFontString(unittest.TestCase):
     ##########
     # TESTS
     ##########
-
     @patch('fonthelper.singlechar.CharacterImageHandler.get_bytes')
     def test_get_font_string_a(self, get_bytes_stub):
         """Validates the byte list for an example 'A' character."""
@@ -130,6 +135,72 @@ class TestCharacterGetFontString(unittest.TestCase):
         get_bytes_stub.side_effect = MyError
         with self.assertRaises(MyError):
             self.cih.get_font_string()
+
+class TestCharacterEvalPixel(unittest.TestCase):
+    """Verify CharacterImageHandler eval_pixel function"""
+
+    @patch('PIL.Image.open')
+    def setUp(self, image_stub):
+        self.longMessage = True  # Enable more verbose assertions
+        self.cih = CharacterImageHandler(None)
+        logging.info("Starting Test: %s" % (self.shortDescription()))
+
+    def tearDown(self):
+        logging.info("Completed Test: %s" % (self.shortDescription()))
+
+    ####################
+    # Helper functions
+    ####################
+
+    ##########
+    # TESTS
+    ##########
+    def test_1bit_0(self):
+        """Verifies that eval_pixel returns True for 1-bit '0' value."""
+        self.cih.im.mode = "1"
+        self.assertEqual(self.cih.eval_pixel(0), True)
+    def test_1bit_255(self):
+        """Verifies that eval_pixel returns False for 1-bit '255' value."""
+        self.cih.im.mode = "1"
+        self.assertEqual(self.cih.eval_pixel(255), False)
+    def test_1bit_127(self):
+        """Verifies that eval_pixel returns True for 1-bit '127' value."""
+        self.cih.im.mode = "1"
+        self.assertEqual(self.cih.eval_pixel(127), True)
+    def test_1bit_128(self):
+        """Verifies that eval_pixel returns False for 1-bit '128' value."""
+        self.cih.im.mode = "1"
+        self.assertEqual(self.cih.eval_pixel(128), False)
+    def test_rgb_0_0_0(self):
+        """Verifies that eval_pixel returns True for RGB '0,0,0' value."""
+        self.cih.im.mode = "RGB"
+        self.assertEqual(self.cih.eval_pixel((0, 0, 0)), True)
+    def test_rgb_0_0_255(self):
+        """Verifies that eval_pixel returns True for RGB '0,0,255' value."""
+        self.cih.im.mode = "RGB"
+        self.assertEqual(self.cih.eval_pixel((0, 0, 255)), True)
+    def test_rgb_0_255_255(self):
+        """Verifies that eval_pixel returns False for RGB '0,255,255' value."""
+        self.cih.im.mode = "RGB"
+        self.assertEqual(self.cih.eval_pixel((0, 255, 255)), False)
+    def test_rgb_255_255_255(self):
+        """Verifies that eval_pixel returns False for RGB '255,255,255' value."""
+        self.cih.im.mode = "RGB"
+        self.assertEqual(self.cih.eval_pixel((255, 255, 255)), False)
+    def test_rgb_127_127_128(self):
+        """Verifies that eval_pixel returns True for RGB '127,127,127' value."""
+        self.cih.im.mode = "RGB"
+        self.assertEqual(self.cih.eval_pixel((127, 127, 127)), True)
+    def test_rgb_127_128_128(self):
+        """Verifies that eval_pixel returns False for RGB '127,127,128' value."""
+        self.cih.im.mode = "RGB"
+        self.assertEqual(self.cih.eval_pixel((127, 127, 128)), False)
+    def test_unknown_mode(self):
+        """Verifies that eval_pixel raises ValueError for an unknown mode."""
+        self.cih.im.mode = "parrot"
+        with self.assertRaises(ValueError):
+            self.cih.eval_pixel((127, 127, 128))
+
 
 
 if __name__ == '__main__':
