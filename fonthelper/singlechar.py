@@ -1,5 +1,6 @@
 from PIL import Image
 import argparse
+from binascii import hexlify
 
 class CharacterImageHandler(object):
     def __init__(self, filename):
@@ -18,6 +19,14 @@ class CharacterImageHandler(object):
                 byte = (byte << 1) + bitvalue
             bytelist.append(byte)
         return bytelist
+    def get_font_string(self):
+        bytelist = self.get_bytes()
+        font_string = ""
+        for i in range(0, 8):
+            hexbyte = "\\x%0.2X" % bytelist[i]
+            font_string += hexbyte
+        return font_string
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Convert a single character image to a font image for the SSD1306.')
@@ -25,4 +34,4 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     cih = CharacterImageHandler(args.image)
-    print cih.get_bytes()
+    print cih.get_font_string()

@@ -95,6 +95,42 @@ class TestCharacterGetBytes(unittest.TestCase):
         expected_list = [124, 126, 19, 17, 19, 126, 124, 0]
         self.assertListEqual(self.cih.get_bytes(), expected_list)
 
+class TestCharacterGetFontString(unittest.TestCase):
+    """Verify CharacterImageHandler get_font_string function"""
+
+    @patch('PIL.Image.open')
+    def setUp(self, image_stub):
+        self.longMessage = True  # Enable more verbose assertions
+        self.cih = CharacterImageHandler(None)
+        logging.info("Starting Test: %s" % (self.shortDescription()))
+
+    def tearDown(self):
+        logging.info("Completed Test: %s" % (self.shortDescription()))
+
+    ####################
+    # Helper functions
+    ####################
+
+    ##########
+    # TESTS
+    ##########
+
+    @patch('fonthelper.singlechar.CharacterImageHandler.get_bytes')
+    def test_get_font_string_a(self, get_bytes_stub):
+        """Validates the byte list for an example 'A' character."""
+        get_bytes_stub.return_value = [124, 126, 19, 17, 19, 126, 124, 0]
+        expected_string = r'\x7C\x7E\x13\x11\x13\x7E\x7C\x00'
+        self.assertEqual(self.cih.get_font_string(), expected_string)
+
+    @patch('fonthelper.singlechar.CharacterImageHandler.get_bytes')
+    def test_get_font_string_exception(self, get_bytes_stub):
+        """Validates that exceptions from get_bytes bubble up to the caller."""
+        class MyError(Exception):
+            pass
+        get_bytes_stub.side_effect = MyError
+        with self.assertRaises(MyError):
+            self.cih.get_font_string()
+
 
 if __name__ == '__main__':
     logging.basicConfig(level=logging.DEBUG, format='%(asctime)s:%(msecs)03d %(levelname)-8s %(name)-8s %(message)s',
