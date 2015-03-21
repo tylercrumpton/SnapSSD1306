@@ -19,6 +19,7 @@ class CharacterImageHandler(object):
             raise ValueError
         return is_black
     def get_bytes(self):
+        """Returns a list of bytes based on the image contents."""
         if not self.check_image_size():
             raise ValueError
         bytelist = []
@@ -30,6 +31,7 @@ class CharacterImageHandler(object):
             bytelist.append(byte)
         return bytelist
     def get_font_string(self):
+        """Returns the formatted font string for the image."""
         bytelist = self.get_bytes()
         font_string = ""
         for i in range(0, 8):
