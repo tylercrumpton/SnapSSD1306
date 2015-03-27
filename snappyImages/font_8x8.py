@@ -1,7 +1,7 @@
 """8x8 pixel font (7x7 usable pixels) based on Joystix font by typodermicfonts"""
 from SSD1306 import *
 
-font_8x8 = ("\x00\x00\x00\x00\x00\x00\x00\x00", # CUSTOM_00
+font_8x8 = ("\x00\x00\x7F\x41\x41\x7F\x00\x00", # CUSTOM_00 (box)
             "\x00\x00\x00\x00\x00\x00\x00\x00", # CUSTOM_01
             "\x00\x00\x00\x00\x00\x00\x00\x00", # CUSTOM_02
             "\x00\x00\x00\x00\x00\x00\x00\x00", # CUSTOM_03
@@ -136,6 +136,9 @@ def print_8x8(string):
     while i < len(string):
         # Grab the current character from the string:
         character = ord(string[i])
+        # Unknown characters are replaced with CUSTOM_00:
+        if character > len(font_8x8):
+            character = 0
         j = 0
         while j < 8:
             # Get the column byte for the current column:
