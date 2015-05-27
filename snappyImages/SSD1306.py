@@ -348,16 +348,22 @@ def connection_init(type):
 
 def send_command(command):
     """Sends a command byte to the display controller."""
-    cmd = ""
-    cmd += chr( SSD1306_ADDRESS )
-    cmd += chr( SELECT_CONTROL_BYTE )
-    cmd += chr( command )
-    i2cWrite(cmd, 10, False)
+    if connection_type == USE_I2C:
+        cmd = ""
+        cmd += chr( SSD1306_ADDRESS )
+        cmd += chr( SELECT_CONTROL_BYTE )
+        cmd += chr( command )
+        i2cWrite(cmd, 10, False)
+    else:
+        print "Not implemented for that connection type yet."
 
 def send_data(data_string):
     """Sends a data string to the display's GDDRAM"""
-    cmd = ""
-    cmd += chr( SSD1306_ADDRESS )
-    cmd += chr( SELECT_DATA_BYTE )
-    cmd += data_string
-    i2cWrite(cmd, 10, False)
+    if connection_type == USE_I2C:
+        cmd = ""
+        cmd += chr( SSD1306_ADDRESS )
+        cmd += chr( SELECT_DATA_BYTE )
+        cmd += data_string
+        i2cWrite(cmd, 10, False)
+    else:
+        print "Not implemented for that connection type yet."
