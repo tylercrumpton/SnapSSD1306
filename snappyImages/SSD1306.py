@@ -7,6 +7,12 @@ SSD1306_COLS        = 128
 SELECT_CONTROL_BYTE = 0x80
 SELECT_DATA_BYTE    = 0x40
 
+USE_INVALID         = 0x00
+USE_I2C             = 0x01
+USE_SPI             = 0x02
+
+connection_type = USE_INVALID
+
 # Fundamental commands:
 def set_contrast(level):
     """Sets the contrast  of the display.
@@ -295,7 +301,7 @@ def send_noop():
 
 def init_display():
     # Init i2c with no pullups (they're external):
-    i2cInit(False)
+    connection_init(USE_I2C)
     # Turn off the display:
     turn_display_off(True)
     # Set the display clock frequency:
@@ -329,18 +335,35 @@ def init_display():
     # Turn off inverse display:
     set_invert_display(False)
 
+def connection_init(type):
+    global connection_type
+    connection_type = type
+
+    if type == USE_I2C:
+        i2cInit(False)
+    elif type == USE_SPI:
+        print "Not implemented yet."
+    else:
+        print "Invalid connection type."
+
 def send_command(command):
     """Sends a command byte to the display controller."""
-    cmd = ""
-    cmd += chr( SSD1306_ADDRESS )
-    cmd += chr( SELECT_CONTROL_BYTE )
-    cmd += chr( command )
-    i2cWrite(cmd, 10, False)
+    if connection_type == USE_I2C:
+        cmd = ""
+        cmd += chr( SSD1306_ADDRESS )
+        cmd += chr( SELECT_CONTROL_BYTE )
+        cmd += chr( command )
+        i2cWrite(cmd, 10, False)
+    else:
+        print "Not implemented for that connection type yet."
 
 def send_data(data_string):
     """Sends a data string to the display's GDDRAM"""
-    cmd = ""
-    cmd += chr( SSD1306_ADDRESS )
-    cmd += chr( SELECT_DATA_BYTE )
-    cmd += data_string
-    i2cWrite(cmd, 10, False)
+    if connection_type == USE_I2C:
+        cmd = ""
+        cmd += chr( SSD1306_ADDRESS )
+        cmd += chr( SELECT_DATA_BYTE )
+        cmd += data_string
+        i2cWrite(cmd, 10, False)
+    else:
+        print "Not implemented for that connection type yet."
